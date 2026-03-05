@@ -1,5 +1,7 @@
 package com.dominickcs.beatstore.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,15 +11,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.dominickcs.beatstore.entity.Beat;
+import com.dominickcs.beatstore.repository.BeatRepository;
 import com.dominickcs.beatstore.service.BeatUploadService;
 
 @RestController
 @RequestMapping("/beats")
 public class BeatUploadController {
   private BeatUploadService beatUploadService;
+  private BeatRepository beatRepository;
 
-  public BeatUploadController(BeatUploadService beatUploadService) {
+  public BeatUploadController(BeatUploadService beatUploadService, BeatRepository beatRepository) {
     this.beatUploadService = beatUploadService;
+    this.beatRepository = beatRepository;
   }
 
   @PostMapping("/upload")
@@ -37,5 +43,10 @@ public class BeatUploadController {
     String response = beatUploadService.generatePresignedURL(key);
 
     return ResponseEntity.ok().body(response);
+  }
+
+  @GetMapping("/")
+  public List<Beat> getAllBeats() {
+    return beatRepository.findAll();
   }
 }
