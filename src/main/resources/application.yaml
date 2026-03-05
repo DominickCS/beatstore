@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: beatstore
+garage:
+  endpoint: ${GARAGE_ENDPOINT}
+  access-key: ${GARAGE_ACCESS_KEY}
+  secret-key: ${GARAGE_SECRET_KEY}
+  region: ${GARAGE_REGION}
+  bucket: ${GARAGE_BUCKET}
