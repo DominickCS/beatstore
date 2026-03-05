@@ -1,6 +1,10 @@
 spring:
   application:
     name: beatstore
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
 garage:
   endpoint: ${GARAGE_ENDPOINT}
   access-key: ${GARAGE_ACCESS_KEY}

@@ -11,6 +11,7 @@ import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3Configuration;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 @Configuration
 public class StorageConfig {
@@ -33,9 +34,20 @@ public class StorageConfig {
         .endpointOverride(URI.create(endpoint))
         .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)))
         .region(Region.of(region))
-        .serviceConfiguration(S3Configuration.builder().pathStyleAccessEnabled(true).build())
+        .serviceConfiguration(
+            S3Configuration.builder().pathStyleAccessEnabled(true).chunkedEncodingEnabled(false).build())
         .build();
+  }
 
+  @Bean
+  public S3Presigner s3Presigner() {
+    return S3Presigner.builder()
+        .endpointOverride(URI.create(endpoint))
+        .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)))
+        .region(Region.of(region))
+        .serviceConfiguration(
+            S3Configuration.builder().pathStyleAccessEnabled(true).chunkedEncodingEnabled(false).build())
+        .build();
   }
 
 }
