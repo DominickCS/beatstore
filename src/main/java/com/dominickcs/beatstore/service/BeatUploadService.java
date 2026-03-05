@@ -1,5 +1,6 @@
 package com.dominickcs.beatstore.service;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -42,11 +43,12 @@ public class BeatUploadService {
 
       Beat beat = new Beat();
 
-      beat.setDescription("Beat Upload " + file.getSize());
+      beat.setDescription("Beat Upload " + file.getBytes().toString());
       beat.setObjStorageKey(beatID);
-      // beat.setPrice(50.0);
+      beat.setPrice(new BigDecimal(50.00));
+      beat.setBpm(137);
       beat.setUploadDate(LocalDateTime.now());
-      beat.setTitle(file.getName());
+      beat.setTitle(file.getOriginalFilename());
 
       beatRepository.save(beat);
 
