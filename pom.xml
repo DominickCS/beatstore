@@ -10,9 +10,9 @@
 	</parent>
 	<groupId>com.dominickcs</groupId>
 	<artifactId>beatstore</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>beatstore</name>
-	<description>A music production selling platform</description>
+	<description>A music production distribution platform</description>
 	<url/>
 	<licenses>
 		<license/>

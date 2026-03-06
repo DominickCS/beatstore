@@ -28,6 +28,8 @@ public class Beat {
 
   private String objStorageKey;
 
+  private String coverArtKey;
+
   private String title;
 
   private String description;
