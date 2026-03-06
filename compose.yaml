@@ -14,7 +14,7 @@ services:
     image: "dxflrs/garage:v2.2.0"
     restart: unless-stopped
     volumes:
-      - ./garage.toml:/etc/garage.toml
+      - ./backend/garage.toml:/etc/garage.toml
       - garage_meta:/var/lib/garage/meta
       - garage_data:/var/lib/garage/data
     ports:
