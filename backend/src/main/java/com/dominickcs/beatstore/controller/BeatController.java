@@ -42,6 +42,11 @@ public class BeatController {
     return ResponseEntity.ok().body(response);
   }
 
+  @GetMapping("/cover/{key}")
+public ResponseEntity<String> getCoverArt(@PathVariable String key) {
+    return ResponseEntity.ok(beatService.generateCoverArtPresignedURL(key));
+}
+
   @GetMapping("")
   public ResponseEntity<List<BeatResponse>> getAllBeats() {
     return ResponseEntity.ok(beatService.getAllBeats());

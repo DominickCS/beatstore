@@ -3,30 +3,37 @@ import BeatCard from "./BeatCard";
 
 export default function BeatGrid() {
   const [allBeats, setAllBeats] = useState([])
+
   useEffect(() => {
-    const fetchBeatsOnMount = async () => {
-      const response = await fetch('/beats')
-      setAllBeats(await response.json())
-    }
-    fetchBeatsOnMount()
+    const fetchBeatMetadata = async () => {
+      const response = await fetch('/beats');
+      const beats = await response.json();
+
+      const revisedBeatMetadata = await Promise.all(beats.map(async (beat) => {
+        const beatResponse = await fetch(`/beats/${beat.objStorageKey}`);
+        const coverResponse = await fetch(`/beats/cover/${beat.coverArtKey}`);
+        return {
+          ...beat,
+          beatUrl: await beatResponse.text(),
+          coverArtUrl: await coverResponse.text()
+        };
+      }));
+
+      setAllBeats(revisedBeatMetadata);
+    };
+
+    fetchBeatMetadata()
   }, [])
 
   return (
     <>
-      {allBeats.map((beat, id) => {
-        return (
-          <BeatCard key={id} data={{
-            title: beat.title,
-            description: beat.description,
-            bpm: beat.bpm,
-            tags: beat.tags,
-            uploadDate: beat.uploadDate,
-            price: beat.price,
-            coverartkey: beat.coverartkey,
-            objStorageKey: beat.objStorageKey
-          }} />
-        )
-      })}
+      <div className="grid grid-cols-2 gap-8">
+        {allBeats.map((beat) => {
+          return (
+            <BeatCard key={beat.objStorageKey} data={beat} />
+          )
+        })}
+      </div>
     </>
   )
 }

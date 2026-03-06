@@ -53,16 +53,16 @@ public class BeatService {
 
       Beat beat = new Beat();
       beat.setObjStorageKey(beatID);
+      beat.setCoverArtKey(coverartID);
       beat.setTitle(uploadRequest.getTitle());
       beat.setDescription(uploadRequest.getDescription());
       beat.setPrice(uploadRequest.getPrice());
       beat.setBpm(uploadRequest.getBpm());
       beat.setTags(uploadRequest.getTags());
-      beat.setCoverArtKey(coverartID);
 
       beatRepository.save(beat);
 
-      return "Upload Complete. ID: " + beatID;
+      return "Upload Complete. BeatID: " + beatID + " CoverArtID: " + coverartID;
     } catch (Exception e) {
       return "Error" + e.getLocalizedMessage();
     }
@@ -80,6 +80,20 @@ public class BeatService {
 
     return s3Presigner.presignGetObject(presignRequest).url().toString();
   }
+
+  public String generateCoverArtPresignedURL(String key) {
+    GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+        .bucket(coverartBucket)
+        .key(key)
+        .build();
+
+    GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
+        .signatureDuration(Duration.ofMinutes(10))
+        .getObjectRequest(getObjectRequest)
+        .build();
+
+    return s3Presigner.presignGetObject(presignRequest).url().toString();
+}
 
   public List<BeatResponse> getAllBeats() {
     List<Beat> beats = beatRepository.findAll();
