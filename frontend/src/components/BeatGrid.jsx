@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import BeatCard from "./BeatCard";
 
-export default function BeatGrid() {
+export default function BeatGrid({ currentlyPlaying, setCurrentlyPlaying }) {
   const [allBeats, setAllBeats] = useState([])
-  const [currentlyPlaying, setCurrentlyPlaying] = useState(null)
 
   useEffect(() => {
     const fetchBeatMetadata = async () => {
@@ -28,7 +27,7 @@ export default function BeatGrid() {
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-8">
+      <div className="grid grid-cols-4 gap-4 px-16">
         {allBeats.map((beat) => {
           return (
             <BeatCard key={beat.objStorageKey} data={beat} currentlyPlaying={currentlyPlaying} setCurrentlyPlaying={setCurrentlyPlaying} />
