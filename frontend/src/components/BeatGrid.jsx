@@ -3,6 +3,7 @@ import BeatCard from "./BeatCard";
 
 export default function BeatGrid() {
   const [allBeats, setAllBeats] = useState([])
+  const [currentlyPlaying, setCurrentlyPlaying] = useState(null)
 
   useEffect(() => {
     const fetchBeatMetadata = async () => {
@@ -15,7 +16,7 @@ export default function BeatGrid() {
         return {
           ...beat,
           beatUrl: await beatResponse.text(),
-          coverArtUrl: await coverResponse.text()
+          coverArtUrl: await coverResponse.text(),
         };
       }));
 
@@ -30,7 +31,7 @@ export default function BeatGrid() {
       <div className="grid grid-cols-2 gap-8">
         {allBeats.map((beat) => {
           return (
-            <BeatCard key={beat.objStorageKey} data={beat} />
+            <BeatCard key={beat.objStorageKey} data={beat} currentlyPlaying={currentlyPlaying} setCurrentlyPlaying={setCurrentlyPlaying} />
           )
         })}
       </div>
