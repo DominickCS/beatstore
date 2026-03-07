@@ -1,0 +1,82 @@
+import Modal from 'react-modal'
+import { useState } from 'react'
+import { Link } from 'react-router-dom';
+
+export default function NavigationBar() {
+  const [modalIsOpen, setIsOpen] = useState(false);
+
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  function afterOpenModal() {
+  }
+
+  function closeModal() {
+    setIsOpen(false);
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const form = e.target;
+
+    const formData = new FormData();
+    formData.append('beatFile', form.beatUpload.files[0]);
+    formData.append('coverartFile', form.coverartUpload.files[0]);
+    formData.append('uploadRequest', new Blob([JSON.stringify({
+      title: form.beatTitle.value,
+      description: form.beatDescription.value,
+      price: form.beatPrice.value,
+      bpm: parseInt(form.beatBPM.value),
+      tags: form.beatTags.value.split(',').map(t => t.trim()) // Separate Tags with commas between each tag
+    })], { type: 'application/json' }));
+
+    const response = await fetch('/beats/upload', {
+      method: 'POST',
+      body: formData
+    });
+
+    if (response.ok) {
+      closeModal();
+    }
+  }
+
+  return (
+    <div className='py-8'>
+      <nav className='flex text-center items-center'>
+        <div className='flex-3'>
+          <h1 className='hover:tracking-widest transition-all duration-500 hover:scale-110 font-extrabold text-4xl text-shadow-white/40 text-shadow-lg'><Link to={'/'}>Y2KDOM</Link></h1>
+        </div>
+        <div className='flex flex-2 justify-evenly'>
+          <Link className='font-bold' to={'/register'}>REGISTER</Link>
+          <Link className='font-bold' to={'/login'}>LOGIN</Link>
+          <button onClick={() => openModal()}>+</button>
+        </div>
+      </nav>
+      <Modal
+        className={"bg-black/90 text-white flex items-center content-center flex-col m-8 min-h-fit py-8"}
+        isOpen={modalIsOpen}
+        onAfterOpen={afterOpenModal}
+        onRequestClose={closeModal}
+      >
+        <form className='flex flex-col *:py-3 [&>input]:border [&>input]:text-center [&>label]:text-center' onSubmit={handleSubmit}>
+          <label htmlFor='beatUpload'>File Upload</label>
+          <input type='file' name='beatUpload' />
+          <label htmlFor='coverartUpload'>Cover Art</label>
+          <input type='file' name='coverartUpload' />
+          <label htmlFor='beatTitle'>Title</label>
+          <input type='text' name='beatTitle' />
+          <label htmlFor='beatDescription'>Description</label>
+          <input type='text' name='beatDescription' />
+          <label htmlFor='beatPrice'>Price</label>
+          <input type='text' name='beatPrice' />
+          <label htmlFor='beatBPM'>BPM</label>
+          <input type='number' name='beatBPM' />
+          <label htmlFor='beatTags'>Tags</label>
+          <input type='text' name='beatTags' />
+          <input className='mt-8' type='submit' value={"Add Beat"} />
+        </form>
+      </Modal>
+    </div>
+  )
+}

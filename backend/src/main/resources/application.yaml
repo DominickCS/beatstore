@@ -21,3 +21,7 @@ garage:
   region: ${GARAGE_REGION}
   bucket: ${GARAGE_BUCKET}
   coverart-bucket: ${GARAGE_COVERART_BUCKET}
+
+admin:
+  email: ${ADMIN_EMAIL}
+  password: ${ADMIN_PASSWORD}

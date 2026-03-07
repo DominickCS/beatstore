@@ -17,10 +17,10 @@ export default function PlayerBar({ currentlyPlaying }) {
 
   return (
     <>
-      <input className="fixed bottom-12 w-full flex accent-white" type="range" min={0} max={duration} value={currentTime} onChange={(e) => { playerRef.current.currentTime = e.target.value; setCurrentTime(e.target.value); }} />
-      <div className="fixed bottom-0 w-full flex content-center items-center">
+      <input className="fixed bottom-18 w-full flex accent-white" type="range" min={0} max={duration} value={currentTime} onChange={(e) => { playerRef.current.currentTime = e.target.value; setCurrentTime(e.target.value); }} />
+      <div className="fixed bottom-0 w-full flex content-center items-center bg-black/10 backdrop-blur-sm py-2">
         <div className="flex items-center [&>p]:px-4 flex-2">
-          <img className="mx-2" src={currentlyPlaying?.coverArtUrl} width={50} />
+          <img className="mx-2" src={currentlyPlaying?.coverArtUrl} width={65} />
           <p className="font-extrabold italic text-lg">{currentlyPlaying?.title ?? "No beat selected"}</p>
           <button onClick={() => isPlaying ? playerRef.current.pause() : playerRef.current.play()}><p className="text-3xl hover:cursor-pointer">{isPlaying ? "⏸" : "▶"}</p></button>
         </div>
