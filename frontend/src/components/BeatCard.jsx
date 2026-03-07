@@ -1,12 +1,20 @@
-export default function BeatCard({ data, setCurrentlyPlaying }) {
+export default function BeatCard({ data, currentlyPlaying, setCurrentlyPlaying }) {
+  const isPlaying = currentlyPlaying?.objStorageKey === data.objStorageKey
   return (
-    <div key={data.id} className="min-w-50 content-center *:my-2 p-8 hover:shadow-2xl shadow-white transition-shadow" onClick={() => setCurrentlyPlaying(data)}>
-      <img src={data.coverArtUrl} />
-      <p className="text-2xl font-extrabold">{data.title}</p>
-      <p className="font-extralight">{new Date(data.uploadDate).toLocaleDateString()}</p>
-      <p>{data.description}</p>
-      <p>{data.bpm} BPM</p>
-      <p className="font-extrabold">${data.price}</p>
+    <div key={data.id} className={isPlaying ? "py-8 border border-white hover:cursor-pointer rounded shadow-2xl shadow-white/10 transition-all duration-1000" : "hover:cursor-pointer hover:scale-90 duration-500 transition-all"} onClick={() => setCurrentlyPlaying(data)}>
+      <img src={data.coverArtUrl} width={200} className="mx-auto" />
+      <h1 className="text-xl font-extrabold text-center my-4">{data.title}</h1>
+      <div className="flex justify-evenly">
+        <p className="text-sm">{data.bpm} BPM</p>
+        <p className="text-sm">${data.price}</p>
+      </div>
+      <div className="flex justify-evenly mt-8">
+        {data.tags.map((tag) => {
+          return (
+            <p className="text-xs">#{tag}</p>
+          )
+        })}
+      </div>
     </div >
   )
 }

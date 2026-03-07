@@ -30,7 +30,7 @@ export default function StoreFront() {
       description: form.beatDescription.value,
       price: form.beatPrice.value,
       bpm: parseInt(form.beatBPM.value),
-      tags: form.beatTags.value.split(',').map(t => t.trim())
+      tags: form.beatTags.value.split(',').map(t => t.trim()) // Separate Tags with commas between each tag
     })], { type: 'application/json' }));
 
     const response = await fetch('/beats/upload', {
@@ -44,56 +44,42 @@ export default function StoreFront() {
   }
 
   return (
-    <>
-      <div>
-        <nav>
-          <button onClick={() => openModal()}>Add New</button>
-        </nav>
+    <div className='min-h-screen'>
+      <nav>
+        <button onClick={() => openModal()}>Add New</button>
+      </nav>
+      <main>
         <BeatGrid
           currentlyPlaying={currentlyPlaying}
           setCurrentlyPlaying={setCurrentlyPlaying}
         />
+
         <PlayerBar currentlyPlaying={currentlyPlaying} />
         <Modal
+          className={"bg-black/90 text-white flex items-center content-center flex-col m-8 min-h-fit py-8"}
           isOpen={modalIsOpen}
           onAfterOpen={afterOpenModal}
           onRequestClose={closeModal}
-          contentLabel="Example Modal"
         >
-          <button onClick={closeModal}>X</button>
-          <form className='*:my-4' onSubmit={handleSubmit}>
-            <div className='flex flex-col'>
-              <label htmlFor='beatUpload'>Beat</label>
-              <input type='file' name='beatUpload' />
-              <label htmlFor='coverartUpload'>Cover Art</label>
-              <input type='file' name='coverartUpload' />
-            </div>
-            <div className='flex flex-col'>
-              <div>
-                <label htmlFor='beatTitle'>Title</label>
-                <input type='text' name='beatTitle' />
-              </div>
-              <div>
-                <label htmlFor='beatDescription'>Description</label>
-                <input type='text' name='beatDescription' />
-              </div>
-              <div>
-                <label htmlFor='beatPrice'>Price</label>
-                <input type='text' name='beatPrice' />
-              </div>
-              <div>
-                <label htmlFor='beatBPM'>BPM</label>
-                <input type='number' name='beatBPM' />
-              </div>
-              <div>
-                <label htmlFor='beatTags'>Tags</label>
-                <input type='text' name='beatTags' />
-              </div>
-              <input type='submit' value={"Add Beat"} />
-            </div>
+          <form className='flex flex-col *:py-3 [&>input]:border [&>input]:text-center [&>label]:text-center' onSubmit={handleSubmit}>
+            <label htmlFor='beatUpload'>File Upload</label>
+            <input type='file' name='beatUpload' />
+            <label htmlFor='coverartUpload'>Cover Art</label>
+            <input type='file' name='coverartUpload' />
+            <label htmlFor='beatTitle'>Title</label>
+            <input type='text' name='beatTitle' />
+            <label htmlFor='beatDescription'>Description</label>
+            <input type='text' name='beatDescription' />
+            <label htmlFor='beatPrice'>Price</label>
+            <input type='text' name='beatPrice' />
+            <label htmlFor='beatBPM'>BPM</label>
+            <input type='number' name='beatBPM' />
+            <label htmlFor='beatTags'>Tags</label>
+            <input type='text' name='beatTags' />
+            <input className='mt-8' type='submit' value={"Add Beat"} />
           </form>
         </Modal>
-      </div>
-    </>
+      </main>
+    </div>
   )
 }

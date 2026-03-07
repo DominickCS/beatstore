@@ -17,13 +17,17 @@ export default function PlayerBar({ currentlyPlaying }) {
 
   return (
     <>
-      <div className="fixed bottom-0 w-full flex *:mx-8">
-        <img src={currentlyPlaying?.coverArtUrl} width={50} />
-        <button onClick={() => isPlaying ? playerRef.current.pause() : playerRef.current.play()}>{isPlaying ? "PAUSE" : "PLAY"}</button>
-        <p>{currentlyPlaying?.title ?? "No beat selected"}</p>
-        <p>{formatTime(currentTime)} / {formatTime(duration)}</p>
-        <input type="range" min={0} max={duration} value={currentTime} onChange={(e) => { playerRef.current.currentTime = e.target.value; setCurrentTime(e.target.value); }} />
-        <input type="range" min={0} max={1} value={volume} step={.01} onChange={(e) => playerRef.current.volume = e.target.value} />
+      <input className="fixed bottom-12 w-full flex accent-white" type="range" min={0} max={duration} value={currentTime} onChange={(e) => { playerRef.current.currentTime = e.target.value; setCurrentTime(e.target.value); }} />
+      <div className="fixed bottom-0 w-full flex content-center items-center">
+        <div className="flex items-center [&>p]:px-4 flex-2">
+          <img src={currentlyPlaying?.coverArtUrl} width={50} />
+          <p className="font-extrabold italic">{currentlyPlaying?.title ?? "No beat selected"}</p>
+          <button onClick={() => isPlaying ? playerRef.current.pause() : playerRef.current.play()}><p className="text-2xl hover:cursor-pointer">{isPlaying ? "⏸" : "▶"}</p></button>
+        </div>
+        <div className="flex flex-1 justify-evenly">
+          <p>{formatTime(currentTime)} / {formatTime(duration)}</p>
+          <input type="range" min={0} max={1} value={volume} step={.01} onChange={(e) => playerRef.current.volume = e.target.value} className="w-24 accent-white" />
+        </div>
         <audio
           ref={playerRef}
           src={currentlyPlaying?.beatUrl}
