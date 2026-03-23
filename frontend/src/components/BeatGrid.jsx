@@ -27,7 +27,7 @@ export default function BeatGrid({ currentlyPlaying, setCurrentlyPlaying }) {
 
   return (
     <>
-      <div className="grid gap-24 sm:grid-cols-3 sm:gap-16 px-12 mt-16">
+      <div className="grid gap-24 sm:grid-cols-6 sm:gap-16 px-12 mt-16">
         {allBeats.map((beat) => {
           return (
             <BeatCard key={beat.objStorageKey} data={beat} currentlyPlaying={currentlyPlaying} setCurrentlyPlaying={setCurrentlyPlaying} />

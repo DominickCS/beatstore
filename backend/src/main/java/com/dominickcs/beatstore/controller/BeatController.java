@@ -47,7 +47,7 @@ public ResponseEntity<String> getCoverArt(@PathVariable String key) {
     return ResponseEntity.ok(beatService.generateCoverArtPresignedURL(key));
 }
 
-  @GetMapping("")
+  @GetMapping
   public ResponseEntity<List<BeatResponse>> getAllBeats() {
     return ResponseEntity.ok(beatService.getAllBeats());
   }

@@ -17,7 +17,7 @@ export default function PlayerBar({ currentlyPlaying }) {
 
   return (
     <>
-      <input className="fixed bottom-18 w-full flex accent-white" type="range" min={0} max={duration} value={currentTime} onChange={(e) => { playerRef.current.currentTime = e.target.value; setCurrentTime(e.target.value); }} />
+      <input className="fixed bottom-18 w-full flex accent-white z-1" type="range" min={0} max={duration} value={currentTime} onChange={(e) => { playerRef.current.currentTime = e.target.value; setCurrentTime(e.target.value); }} />
       <div className="fixed bottom-0 w-full flex content-center items-center bg-black/10 backdrop-blur-sm py-2">
         <div className="flex items-center [&>p]:px-4 flex-2">
           <img className="mx-2" src={currentlyPlaying?.coverArtUrl} width={65} />

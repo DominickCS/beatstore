@@ -59,7 +59,7 @@ export default function NavigationBar() {
         onAfterOpen={afterOpenModal}
         onRequestClose={closeModal}
       >
-        <form className='flex flex-col *:py-3 [&>input]:border [&>input]:text-center [&>label]:text-center' onSubmit={handleSubmit}>
+        <form className='flex flex-col *:py-3 [&>input]:border [&>input]:text-center [&>input]:px-4 [&>label]:text-center' onSubmit={handleSubmit}>
           <label htmlFor='beatUpload'>File Upload</label>
           <input type='file' name='beatUpload' />
           <label htmlFor='coverartUpload'>Cover Art</label>
