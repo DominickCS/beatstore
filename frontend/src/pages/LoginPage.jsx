@@ -12,7 +12,6 @@ export default function LoginPage() {
 
   async function handleSubmit(e) {
     e.preventDefault()
-    // fetch /auth/login here
     const response = await fetch(`http://localhost:8080/auth/login`, {
       method: "POST",
       headers: {
@@ -27,11 +26,11 @@ export default function LoginPage() {
 
 
     if (response.ok) {
-      alert("Login successful!")
+      alert("LOGIN SUCCESSFUL!")
       navigate("/")
     }
     else {
-      setMessage("Invalid Login")
+      setMessage("INVALID LOGIN!")
     }
   }
 
@@ -56,7 +55,7 @@ export default function LoginPage() {
           <input type='password' value={formData.password} onChange={handleChange} name='password' />
           <input type='submit' value="LOGIN" />
         </form>
-        {message != null && <p>{message}</p>}
+        {message != null && <p className='text-center mt-8'>{message}</p>}
       </div>
     </>
   )
