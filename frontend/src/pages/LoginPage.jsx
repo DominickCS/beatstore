@@ -69,11 +69,11 @@ export default function LoginPage() {
       <ToastContainer />
       <NavigationBar />
       <div className='mx-auto max-w-sm h-200 content-center'>
-        <form onSubmit={handleSubmit} className='[&>input]:bg-white [&>input]:text-black *:my-2 flex flex-col'>
+        <form onSubmit={handleSubmit} className='[&>input]:bg-white [&>input]:text-black [&>input]:px-2 font-semibold *:my-4 flex flex-col'>
           <h1 className='text-3xl font-extrabold text-center'>LOGIN</h1>
           <input type='email' value={formData.email} onChange={handleChange} name='email' />
           <input type='password' value={formData.password} onChange={handleChange} name='password' />
-          <input type='submit' value="LOGIN" />
+          <button type='submit' className='bn54 mx-auto'>LOGIN</button>
         </form>
       </div>
     </>

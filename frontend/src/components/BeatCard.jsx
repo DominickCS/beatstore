@@ -1,19 +1,22 @@
 export default function BeatCard({ data, currentlyPlaying, setCurrentlyPlaying }) {
   const isPlaying = currentlyPlaying?.objStorageKey === data.objStorageKey
   return (
-    <div key={data.id} className={isPlaying ? "animate-pulse py-8 border border-white hover:cursor-pointer rounded shadow-2xl shadow-white/40 transition-all duration-1000" : "hover:cursor-pointer hover:scale-90 duration-500 transition-all"} onClick={() => setCurrentlyPlaying(data)}>
-      <img src={data.coverArtUrl} width={400} className="mx-auto max-w-50" />
-      <h1 className="text-xl font-extrabold text-center my-4">{data.title}</h1>
-      <div className="flex justify-evenly">
-        <p className="text-sm">{data.bpm} BPM</p>
-        <p className="text-sm">${data.price}</p>
-      </div>
-      <div className="flex justify-evenly mt-8">
+    <div key={data.id} className={isPlaying ? "rounded-4xl shadow-2xl shadow-white/30 transition-all duration-1000 overflow-hidden bg-black scale-110 border-white border-4" : "hover:scale-95 duration-500 transition-all overflow-hidden rounded-4xl"} >
+      <img src={data.coverArtUrl} className="mx-auto w-full h-full object-cover max-h-80 border-b-4 hover:cursor-pointer" onClick={() => setCurrentlyPlaying(data)} />
+      <h1 className="text-2xl font-extrabold text-center mt-4">{data.title}</h1>
+      <div className="flex justify-evenly mb-6">
         {data.tags.map((tag) => {
           return (
-            <p className="text-xs">#{tag}</p>
+            <p className="text-xs font-extralight">#{tag}</p>
           )
         })}
+      </div>
+      <div className="flex justify-evenly">
+        <p className="text-md">{data.bpm} BPM</p>
+        <p className="text-md">${data.price}</p>
+      </div>
+      <div className="flex justify-center pt-8 pb-6">
+        <button className="bn54">PURCHASE</button>
       </div>
     </div >
   )

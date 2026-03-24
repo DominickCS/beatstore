@@ -23,11 +23,11 @@ export default function BeatGrid({ currentlyPlaying, setCurrentlyPlaying }) {
     };
 
     fetchBeatMetadata()
-  }, [])
+  }, [currentlyPlaying]) // Revisit this, make sure that this doesn't cause performance issues | used to refresh pre-signed player links
 
   return (
     <>
-      <div className="grid gap-24 sm:grid-cols-6 sm:gap-16 px-12 mt-16">
+      <div className="grid gap-24 sm:grid-cols-5 sm:gap-24 px-64 mt-24 pb-48">
         {allBeats.map((beat) => {
           return (
             <BeatCard key={beat.objStorageKey} data={beat} currentlyPlaying={currentlyPlaying} setCurrentlyPlaying={setCurrentlyPlaying} />

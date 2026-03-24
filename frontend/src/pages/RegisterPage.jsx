@@ -64,7 +64,7 @@ export default function RegisterPage() {
       <NavigationBar />
       <ToastContainer />
       <div className='mx-auto max-w-sm h-200 content-center'>
-        <form onSubmit={handleSubmit} className='[&>input]:bg-white [&>input]:text-black *:my-2 flex flex-col'>
+        <form onSubmit={handleSubmit} className='[&>input]:bg-white [&>input]:text-black [&>input]:px-2 font-semibold *:my-4 flex flex-col'>
           <h1 className='text-3xl font-extrabold text-center'>REGISTER</h1>
           <label htmlFor="fullName">Full Name</label>
           <input type="text" value={formData.fullName} onChange={handleChange} name="fullName" />
@@ -72,7 +72,7 @@ export default function RegisterPage() {
           <input type='email' value={formData.email} onChange={handleChange} name='email' />
           <label htmlFor="password">Password</label>
           <input type='password' value={formData.password} onChange={handleChange} name='password' />
-          <input type='submit' value="REGISTER" />
+          <button type="submit" className="bn54 mx-auto">REGISTER</button>
         </form>
       </div>
     </>
