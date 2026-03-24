@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { useNavigate, Link, redirect } from 'react-router-dom'
 import NavigationBar from '../components/NavigationBar'
+import { ToastContainer, toast, Bounce } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+
 
 export default function LoginPage() {
   const [message, setMessage] = useState(null)
@@ -24,13 +27,24 @@ export default function LoginPage() {
       })
     })
 
+    const displayToast = async () => {
+      toast(<p className="font-extrabold text-center text-md">{await response.text()}</p>, {
+        position: "bottom-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+    }
+
+    displayToast()
 
     if (response.ok) {
-      alert("LOGIN SUCCESSFUL!")
-      navigate("/")
-    }
-    else {
-      setMessage("INVALID LOGIN!")
+      setTimeout(() => { navigate("/") }, 6000)
     }
   }
 
@@ -47,6 +61,7 @@ export default function LoginPage() {
 
   return (
     <>
+      <ToastContainer />
       <NavigationBar />
       <div className='mx-auto max-w-sm h-200 content-center'>
         <form onSubmit={handleSubmit} className='[&>input]:bg-white [&>input]:text-black *:my-2 flex flex-col'>

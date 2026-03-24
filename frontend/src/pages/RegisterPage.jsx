@@ -1,6 +1,7 @@
 import { useState } from "react";
 import NavigationBar from "../components/NavigationBar";
 import { useNavigate } from "react-router-dom";
+import { toast, Bounce, ToastContainer } from "react-toastify";
 
 export default function RegisterPage() {
   const [message, setMessage] = useState("")
@@ -26,11 +27,26 @@ export default function RegisterPage() {
       })
     })
 
-    setMessage((await response.text()))
-
-    if (message.includes("REGISTERED")) {
-      setTimeout(() => { navigate("/") }, 2000)
+    const displayToast = async () => {
+      toast(<p className="font-extrabold text-center text-md">{await response.text()}</p>, {
+        position: "bottom-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
     }
+
+    displayToast()
+
+    if (response.ok) {
+      setTimeout(() => { navigate("/") }, 6000)
+    }
+
   }
 
   const handleChange = (e) => {
@@ -47,6 +63,7 @@ export default function RegisterPage() {
   return (
     <>
       <NavigationBar />
+      <ToastContainer />
       <div className='mx-auto max-w-sm h-200 content-center'>
         <form onSubmit={handleSubmit} className='[&>input]:bg-white [&>input]:text-black *:my-2 flex flex-col'>
           <h1 className='text-3xl font-extrabold text-center'>REGISTER</h1>
