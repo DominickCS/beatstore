@@ -26,11 +26,10 @@ export default function LoginPage() {
 
       const token = response.data.token;
       login(token)
-      localStorage.setItem('token', token);
 
       toast.success(<p className="font-extrabold text-center text-lg">{response.data.message}</p>, {
         position: "bottom-center",
-        autoClose: 5000,
+        autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: false,
         pauseOnHover: true,
@@ -39,13 +38,13 @@ export default function LoginPage() {
         transition: Bounce,
       });
 
-      setTimeout(() => navigate("/"), 6000);
+      setTimeout(() => navigate("/"), 3000);
 
     } catch (err) {
 
       toast.error(<p className="font-extrabold text-center text-lg">{err.response.data.message}</p>, {
         position: "bottom-center",
-        autoClose: 5000,
+        autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: false,
         pauseOnHover: true,
