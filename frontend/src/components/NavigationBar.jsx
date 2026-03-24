@@ -1,8 +1,11 @@
 import Modal from 'react-modal'
 import { useState } from 'react'
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext'
+import api from '../api/axiosInstance';
 
 export default function NavigationBar() {
+  const { user, logout } = useAuth();
   const [modalIsOpen, setIsOpen] = useState(false);
 
   function openModal() {
@@ -31,12 +34,14 @@ export default function NavigationBar() {
       tags: form.beatTags.value.split(',').map(t => t.trim()) // Separate Tags with commas between each tag
     })], { type: 'application/json' }));
 
-    const response = await fetch('/beats/upload', {
-      method: 'POST',
-      body: formData
+    const response = await api.post('/api/admin/upload', formData, {
+      headers: {
+        'Content-Type': `multipart/form-data`,
+      },
     });
 
-    if (response.ok) {
+    console.log(response)
+    if (response.status == 200) {
       closeModal();
     }
   }
@@ -48,9 +53,20 @@ export default function NavigationBar() {
           <h1 className='hover:tracking-widest transition-all duration-500 hover:scale-110 font-extrabold text-4xl text-shadow-white/40 text-shadow-lg'><Link to={'/'}>Y2KDOM</Link></h1>
         </div>
         <div className='flex flex-2 justify-evenly'>
-          <Link className='font-bold' to={'/register'}>REGISTER</Link>
-          <Link className='font-bold' to={'/login'}>LOGIN</Link>
-          <button onClick={() => openModal()}>+</button>
+          {user ? (
+            <>
+              <Link to="/profile">Profile</Link>
+              <button className="hover:cursor-pointer" onClick={logout}>Logout</button>
+              {user.roles?.includes('ROLE_ADMIN') && (
+                <button className="hover:cursor-pointer" onClick={() => openModal()}>+</button>
+              )}
+            </>
+          ) : (
+            <>
+              <Link to="/login">Login</Link>
+              <Link to="/register">Register</Link>
+            </>
+          )}
         </div>
       </nav>
       <Modal
