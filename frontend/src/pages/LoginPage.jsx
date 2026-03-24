@@ -4,9 +4,11 @@ import NavigationBar from '../components/NavigationBar'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import api from '../api/axiosInstance';
+import { useAuth } from '../context/AuthContext';
 
 
 export default function LoginPage() {
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     "email": '',
     "password": ''
@@ -23,6 +25,7 @@ export default function LoginPage() {
       });
 
       const token = response.data.token;
+      login(token)
       localStorage.setItem('token', token);
 
       toast.success(<p className="font-extrabold text-center text-lg">{response.data.message}</p>, {
