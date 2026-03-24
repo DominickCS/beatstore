@@ -4,14 +4,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.dominickcs.beatstore.entity.User;
 import com.dominickcs.beatstore.entity.enums.UserRoles;
@@ -38,17 +39,18 @@ public class SecurityConfig {
   }
 
   @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http
-        .csrf(csrf -> csrf.disable()) // disable for now, revisit before production
+  public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
+    return http
+        .csrf(csrf -> csrf.disable())
+        .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers(HttpMethod.GET, "/beats/**").permitAll()
-            .requestMatchers(HttpMethod.POST, "/beats/upload").hasRole("ADMIN")
-            .requestMatchers("/auth/**").permitAll()
+            .requestMatchers("/api/beats/{key}").permitAll()
+            .requestMatchers("/api/beats/cover/{key}").permitAll()
+            .requestMatchers("/api/beats/**").permitAll()
+            .requestMatchers("/api/auth/**").permitAll()
             .anyRequest().authenticated())
-        .formLogin(form -> form.disable())
-        .httpBasic(basic -> basic.disable());
-    return http.build();
+        .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+        .build();
   }
 
   @Bean

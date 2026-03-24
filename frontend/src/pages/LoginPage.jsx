@@ -1,12 +1,12 @@
 import { useState } from 'react'
-import { useNavigate, Link, redirect } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import NavigationBar from '../components/NavigationBar'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import api from '../api/axiosInstance';
 
 
 export default function LoginPage() {
-  const [message, setMessage] = useState(null)
   const [formData, setFormData] = useState({
     "email": '',
     "password": ''
@@ -14,37 +14,42 @@ export default function LoginPage() {
   const navigate = useNavigate()
 
   async function handleSubmit(e) {
-    e.preventDefault()
-    const response = await fetch(`http://localhost:8080/auth/login`, {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: "include",
-      body: JSON.stringify({
-        "email": formData.email,
-        "password": formData.password
-      })
-    })
+    e.preventDefault();
 
-    const displayToast = async () => {
-      toast(<p className="font-extrabold text-center text-md">{await response.text()}</p>, {
+    try {
+      const response = await api.post('/api/auth/login', {
+        email: formData.email,
+        password: formData.password,
+      });
+
+      const token = response.data.token;
+      localStorage.setItem('token', token);
+
+      toast.success(<p className="font-extrabold text-center text-lg">{response.data.message}</p>, {
         position: "bottom-center",
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: false,
         pauseOnHover: true,
         draggable: true,
-        progress: undefined,
         theme: "dark",
         transition: Bounce,
       });
-    }
 
-    displayToast()
+      setTimeout(() => navigate("/"), 6000);
 
-    if (response.ok) {
-      setTimeout(() => { navigate("/") }, 6000)
+    } catch (err) {
+
+      toast.error(<p className="font-extrabold text-center text-lg">{err.response.data.message}</p>, {
+        position: "bottom-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark",
+        transition: Bounce,
+      });
     }
   }
 
@@ -55,8 +60,6 @@ export default function LoginPage() {
       ...prev,
       [name]: value
     }));
-
-    setMessage("")
   };
 
   return (
@@ -70,7 +73,6 @@ export default function LoginPage() {
           <input type='password' value={formData.password} onChange={handleChange} name='password' />
           <input type='submit' value="LOGIN" />
         </form>
-        {message != null && <p className='text-center mt-8'>{message}</p>}
       </div>
     </>
   )

@@ -6,7 +6,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dominickcs.beatstore.dto.request.UserAuthRequest;
+import com.dominickcs.beatstore.dto.request.AuthRequest;
+import com.dominickcs.beatstore.dto.response.AuthResponse;
 import com.dominickcs.beatstore.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,18 +15,18 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
   private final UserService userService;
 
   @PostMapping("/register")
-  public ResponseEntity<String> register(@RequestBody UserAuthRequest request) {
+  public ResponseEntity<AuthResponse> register(@RequestBody AuthRequest request) {
     return userService.registerUser(request);
   }
 
   @PostMapping("/login")
-  public ResponseEntity<String> login(@RequestBody UserAuthRequest request, HttpServletRequest httpRequest,
+  public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request, HttpServletRequest httpRequest,
       HttpServletResponse httpResponse) {
     return userService.login(request, httpRequest, httpResponse);
   }

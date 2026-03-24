@@ -1,21 +1,21 @@
 import { useEffect, useState } from "react";
 import BeatCard from "./BeatCard";
+import api from "../api/axiosInstance";
 
 export default function BeatGrid({ currentlyPlaying, setCurrentlyPlaying }) {
   const [allBeats, setAllBeats] = useState([])
 
   useEffect(() => {
     const fetchBeatMetadata = async () => {
-      const response = await fetch('/beats');
-      const beats = await response.json();
-
+      const response = await api.get('/api/beats');
+      const beats = response.data
       const revisedBeatMetadata = await Promise.all(beats.map(async (beat) => {
-        const beatResponse = await fetch(`/beats/${beat.objStorageKey}`);
-        const coverResponse = await fetch(`/beats/cover/${beat.coverArtKey}`);
+        const beatResponse = await api.get(`/api/beats/${beat.objStorageKey}`);
+        const coverResponse = await api.get(`/api/beats/cover/${beat.coverArtKey}`);
         return {
           ...beat,
-          beatUrl: await beatResponse.text(),
-          coverArtUrl: await coverResponse.text(),
+          beatUrl: await beatResponse.data,
+          coverArtUrl: await coverResponse.data,
         };
       }));
 

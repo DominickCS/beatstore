@@ -2,9 +2,9 @@ import { useState } from "react";
 import NavigationBar from "../components/NavigationBar";
 import { useNavigate } from "react-router-dom";
 import { toast, Bounce, ToastContainer } from "react-toastify";
+import api from '../api/axiosInstance';
 
 export default function RegisterPage() {
-  const [message, setMessage] = useState("")
   const [formData, setFormData] = useState({
     "fullName": '',
     "email": '',
@@ -13,40 +13,41 @@ export default function RegisterPage() {
   const navigate = useNavigate()
 
   async function handleSubmit(e) {
-    e.preventDefault()
-    const response = await fetch(`http://localhost:8080/auth/register`, {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: "include",
-      body: JSON.stringify({
-        "fullName": formData.fullName,
-        "email": formData.email,
-        "password": formData.password
-      })
-    })
+    e.preventDefault();
 
-    const displayToast = async () => {
-      toast(<p className="font-extrabold text-center text-md">{await response.text()}</p>, {
+    try {
+      const response = await api.post('/api/auth/register', {
+        fullName: formData.fullName,
+        email: formData.email,
+        password: formData.password,
+      });
+
+
+      toast.success(<p className="font-extrabold text-center text-lg">{response.data.message}</p>, {
         position: "bottom-center",
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: false,
         pauseOnHover: true,
         draggable: true,
-        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+
+      setTimeout(() => navigate("/"), 6000);
+
+    } catch (err) {
+      toast.error(<p className="font-extrabold text-center text-lg">{err.response.data.message}</p>, {
+        position: "bottom-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
         theme: "dark",
         transition: Bounce,
       });
     }
-
-    displayToast()
-
-    if (response.ok) {
-      setTimeout(() => { navigate("/") }, 6000)
-    }
-
   }
 
   const handleChange = (e) => {
@@ -56,8 +57,6 @@ export default function RegisterPage() {
       ...prev,
       [name]: value
     }));
-
-    setMessage("")
   };
 
   return (
@@ -75,7 +74,6 @@ export default function RegisterPage() {
           <input type='password' value={formData.password} onChange={handleChange} name='password' />
           <input type='submit' value="REGISTER" />
         </form>
-        {message != null && <p className='text-center mt-8'>{message}</p>}
       </div>
     </>
   )

@@ -17,7 +17,7 @@ import com.dominickcs.beatstore.dto.response.BeatResponse;
 import com.dominickcs.beatstore.service.BeatService;
 
 @RestController
-@RequestMapping("/beats")
+@RequestMapping("/api")
 public class BeatController {
   private BeatService beatService;
 
@@ -25,7 +25,7 @@ public class BeatController {
     this.beatService = beatService;
   }
 
-  @PostMapping("/upload")
+  @PostMapping("/admin/upload")
   public ResponseEntity<String> uploadBeat(@RequestParam MultipartFile beatFile,
       @RequestParam MultipartFile coverartFile,
       @RequestPart BeatUploadRequest uploadRequest) {
@@ -35,19 +35,19 @@ public class BeatController {
 
   }
 
-  @GetMapping("/{key}")
+  @GetMapping("/beats/{key}")
   public ResponseEntity<String> getBeat(@PathVariable(name = "key") String key) {
     String response = beatService.generatePresignedURL(key);
 
     return ResponseEntity.ok().body(response);
   }
 
-  @GetMapping("/cover/{key}")
-public ResponseEntity<String> getCoverArt(@PathVariable String key) {
+  @GetMapping("/beats/cover/{key}")
+  public ResponseEntity<String> getCoverArt(@PathVariable String key) {
     return ResponseEntity.ok(beatService.generateCoverArtPresignedURL(key));
-}
+  }
 
-  @GetMapping
+  @GetMapping("/beats")
   public ResponseEntity<List<BeatResponse>> getAllBeats() {
     return ResponseEntity.ok(beatService.getAllBeats());
   }
