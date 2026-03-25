@@ -87,7 +87,7 @@ public class BeatService {
     ListObjectsV2Response response = s3Client.listObjectsV2(request);
 
     return response.contents().stream().map(object -> {
-      return object.sdkFields;
+      return object.key();
     }).collect(Collectors.toList());
   }
 
