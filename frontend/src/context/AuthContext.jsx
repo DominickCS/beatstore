@@ -4,25 +4,21 @@ import { parseJwt } from '../utils/auth';
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null); // null = not authenticated
-
-  useEffect(() => {
+  const [user, setUser] = useState(() => {
     const token = localStorage.getItem('token');
-    if (token) {
-      try {
-        const payload = parseJwt(token);
-        // Check expiry
-        if (payload.exp * 1000 > Date.now()) {
-          setUser({ username: payload.sub, roles: payload.roles ?? [] });
-        } else {
-          localStorage.removeItem('token'); // expired, clear it
-        }
-      } catch {
-        localStorage.removeItem('token'); // malformed
+    if (!token) return null;
+    try {
+      const payload = parseJwt(token);
+      if (payload.exp * 1000 > Date.now()) {
+        return { username: payload.sub, roles: payload.roles ?? [] };
       }
+      localStorage.removeItem('token');
+      return null;
+    } catch {
+      localStorage.removeItem('token');
+      return null;
     }
-  }, []);
-
+  });
   const login = (token) => {
     localStorage.setItem('token', token);
     const payload = parseJwt(token);

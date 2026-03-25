@@ -75,6 +75,9 @@ export default function NavigationBar() {
         <div className='flex flex-2 justify-evenly'>
           {user ? (
             <>
+              {user.roles?.includes('ROLE_ADMIN') && (
+                <Link to="/admin">Admin</Link>
+              )}
               <Link to="/profile">Profile</Link>
               <button className="hover:cursor-pointer" onClick={logout}>Logout</button>
               {user.roles?.includes('ROLE_ADMIN') && (
@@ -106,7 +109,17 @@ export default function NavigationBar() {
           <input type='text' name='beatDescription' />
           {errors.description && <p>{errors.description}</p>}
           <label htmlFor='beatPrice'>Price</label>
-          <input type='text' name='beatPrice' />
+          <input
+            type='text'
+            name='beatPrice'
+            maxLength={6}
+            onKeyDown={e => {
+              const allowed = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab']
+              if (allowed.includes(e.key)) return
+              if (!/[\d.]/.test(e.key)) { e.preventDefault(); return }
+              if (e.key === '.' && e.target.value.includes('.')) e.preventDefault()
+            }}
+          />
           {errors.price && <p>{errors.price}</p>}
           <label htmlFor='beatBPM'>BPM</label>
           <input type='number' name='beatBPM' />
