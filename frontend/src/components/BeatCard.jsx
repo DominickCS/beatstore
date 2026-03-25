@@ -15,7 +15,7 @@ export default function BeatCard({ data, currentlyPlaying, setCurrentlyPlaying }
         <p className="text-md">{data.bpm} BPM</p>
         <p className="text-md">${data.price}</p>
       </div>
-      <div className="flex justify-center pt-8 pb-6">
+      <div className="flex justify-center pt-8 lg:pb-16 sm:pb-4">
         <button className="bn54">PURCHASE</button>
       </div>
     </div >
