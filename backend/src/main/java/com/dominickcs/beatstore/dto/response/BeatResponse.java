@@ -4,16 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import lombok.Data;
-
-@Data
-public class BeatResponse {
-  private String objStorageKey;
-  private String coverArtKey;
-  private String title;
-  private String description;
-  private BigDecimal price;
-  private int bpm;
-  private List<String> tags;
-  private LocalDateTime uploadDate;
-}
+public record BeatResponse(String objStorageKey, String coverArtKey, String title, String description, BigDecimal price,
+    int bpm, List<String> tags, LocalDateTime uploadDate) {
+};
