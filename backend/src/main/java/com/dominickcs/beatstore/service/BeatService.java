@@ -2,6 +2,7 @@ package com.dominickcs.beatstore.service;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.dominickcs.beatstore.dto.request.BeatListingDeletionRequest;
 import com.dominickcs.beatstore.dto.request.BeatUploadRequest;
 import com.dominickcs.beatstore.dto.response.BeatResponse;
 import com.dominickcs.beatstore.entity.Beat;
@@ -20,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
+import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
@@ -40,7 +44,8 @@ public class BeatService {
   public ResponseEntity<String> uploadBeat(MultipartFile beatFile, MultipartFile coverartFile,
       BeatUploadRequest uploadRequest) {
     try {
-      String beatID = UUID.randomUUID().toString();
+      String beatID = UUID.randomUUID().toString(); // TODO - Change this to RequestTitle and change beat entity to
+                                                    // Unique String for Id
       s3Client.putObject(
           PutObjectRequest.builder().bucket(bucket).key(beatID).contentType("audio/mpeg").build(),
           RequestBody.fromBytes(beatFile.getBytes()));
@@ -64,6 +69,26 @@ public class BeatService {
     } catch (Exception e) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There was an error uploading your beat...");
     }
+  }
+
+  public ResponseEntity<String> deleteBeatListing(BeatListingDeletionRequest request) throws NoSuchElementException {
+    try {
+      Beat beat = beatRepository.findById(request.id()).orElseThrow(NoSuchElementException::new);
+      beatRepository.delete(beat);
+      return ResponseEntity.ok("The beat has been deleted successfully!");
+    } catch (NoSuchElementException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A beat with the ID supplied doesn't exist.");
+    }
+  }
+
+  public List<String> getAllBeatObjects() {
+    ListObjectsV2Request request = ListObjectsV2Request.builder().bucket(bucket).build();
+
+    ListObjectsV2Response response = s3Client.listObjectsV2(request);
+
+    return response.contents().stream().map(object -> {
+      return object.sdkFields;
+    }).collect(Collectors.toList());
   }
 
   public String generatePresignedURL(String key) {
@@ -103,7 +128,8 @@ public class BeatService {
   }
 
   private BeatResponse toBeatResponse(Beat beat) {
-    return new BeatResponse(beat.getObjStorageKey(), beat.getCoverArtKey(), beat.getTitle(), beat.getDescription(),
+    return new BeatResponse(beat.getId(), beat.getObjStorageKey(), beat.getCoverArtKey(), beat.getTitle(),
+        beat.getDescription(),
         beat.getPrice(), beat.getBpm(), beat.getTags(), beat.getUploadDate());
   }
 }

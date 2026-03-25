@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.dominickcs.beatstore.dto.request.BeatListingDeletionRequest;
 import com.dominickcs.beatstore.dto.request.BeatUploadRequest;
 import com.dominickcs.beatstore.dto.response.BeatResponse;
 import com.dominickcs.beatstore.service.BeatService;
@@ -36,6 +38,12 @@ public class BeatController {
     return beatService.uploadBeat(beatFile, coverartFile, uploadRequest);
   }
 
+  @DeleteMapping("/beats/delete/{id}")
+  public ResponseEntity<String> deleteBeatListing(@PathVariable(name = "id") Long id,
+      BeatListingDeletionRequest request) {
+    return beatService.deleteBeatListing(request);
+  }
+
   @GetMapping("/beats/{key}")
   public ResponseEntity<String> getBeat(@PathVariable(name = "key") String key) {
     String response = beatService.generatePresignedURL(key);
@@ -51,6 +59,11 @@ public class BeatController {
   @GetMapping("/beats")
   public ResponseEntity<List<BeatResponse>> getAllBeats() {
     return ResponseEntity.ok(beatService.getAllBeats());
+  }
+
+  @GetMapping("/buckets/beats")
+  public List<String> getAllBeatObjects() {
+    return beatService.getAllBeatObjects();
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
