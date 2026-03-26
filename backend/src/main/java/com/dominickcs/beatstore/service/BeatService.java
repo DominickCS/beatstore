@@ -44,15 +44,18 @@ public class BeatService {
   public ResponseEntity<String> uploadBeat(MultipartFile beatFile, MultipartFile coverartFile,
       BeatUploadRequest uploadRequest) {
     try {
-      String beatID = UUID.randomUUID().toString(); // TODO - Change this to RequestTitle and change beat entity to
-                                                    // Unique String for Id
+      String beatID = UUID.randomUUID().toString().substring(0, 3); // TODO - Change this to RequestTitle and change
+                                                                    // beat entity to
+      // Unique String for Id
       s3Client.putObject(
-          PutObjectRequest.builder().bucket(bucket).key(beatID).contentType("audio/mpeg").build(),
+          PutObjectRequest.builder().bucket(bucket).key(uploadRequest.title().replaceAll(" ", "-") + "-" + beatID)
+              .contentType("audio/mpeg").build(),
           RequestBody.fromBytes(beatFile.getBytes()));
 
-      String coverartID = UUID.randomUUID().toString();
+      String coverartID = UUID.randomUUID().toString().substring(0, 4);
       s3Client.putObject(
-          PutObjectRequest.builder().bucket(coverartBucket).key(coverartID).contentType("image/png").build(),
+          PutObjectRequest.builder().bucket(coverartBucket)
+              .key(uploadRequest.title().replaceAll(" ", "-") + "-" + coverartID).contentType("image/png").build(),
           RequestBody.fromBytes(coverartFile.getBytes()));
 
       Beat beat = new Beat();
