@@ -25,7 +25,7 @@ export default function AdminPage() {
   };
 
   const fetchBeatObjects = async () => {
-    const response = await api.get('/api/buckets/beats');
+    const response = await api.get('/api/admin/buckets/beats');
     setBeatObjects(response.data)
     console.log(response.data)
   }
@@ -35,9 +35,11 @@ export default function AdminPage() {
     fetchBeatObjects()
   }, [])
 
-  async function handleDeletion(id) {
+  async function handleListingDeletion(id) {
     try {
-      const response = await api.delete(`/api/beats/delete/${id}`)
+      const response = await api.delete(`/api/admin/beats/delete`, {
+        data: { id: id }
+      })
       toast.success(<p className="font-extrabold text-center text-lg">{response.data}</p>, {
         position: "bottom-center",
         autoClose: 2000,
@@ -64,6 +66,40 @@ export default function AdminPage() {
     }
   }
 
+  async function handleBeatObjectDeletion(key) {
+    try {
+      const response = await api.delete("/api/admin/buckets/beats/delete", {
+        data: { beatObjKey: key }
+      })
+      toast.success(<p className="font-extrabold text-center text-lg">{response.data}</p>, {
+        position: "bottom-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark",
+        transition: Bounce,
+      });
+      console.log(response)
+
+      fetchBeatObjects()
+    } catch (e) {
+      console.log(e)
+      toast.error(<p className="font-extrabold text-center text-lg">{e.data}</p>, {
+        position: "bottom-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark",
+        transition: Bounce,
+      });
+    }
+  }
+
+
   return (
     <>
       <ToastContainer />
@@ -73,12 +109,13 @@ export default function AdminPage() {
       </div>
       <div className="grid grid-cols-2">
         <ul className="text-center">
-          <h2>Storefront Management</h2>
+          <h2>Storefront Listing Management</h2>
           {allBeats.map((beat) => {
             return (
               <div className="flex justify-between max-w-md mx-auto">
                 <li>{beat.title}</li>
-                <button onClick={() => handleDeletion(beat.id)}>Delete</button>
+                <li>{beat.price}</li>
+                <button onClick={() => handleListingDeletion(beat.id)}>Delete</button>
               </div>
             )
           })}
@@ -89,7 +126,7 @@ export default function AdminPage() {
             return (
               <div className="flex justify-between max-w-md mx-auto">
                 <li>{beatObj}</li>
-                <button onClick={() => handleDeletion(beatObjects.id)}>Delete</button>
+                <button onClick={() => handleBeatObjectDeletion(beatObj)}>Delete</button>
               </div>
             )
           })}

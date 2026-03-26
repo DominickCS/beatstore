@@ -30,7 +30,7 @@ export default function ListingCreationPage() {
     })], { type: 'application/json' }));
 
     try {
-      const response = await api.post('/api/beats/upload', formData, {
+      const response = await api.post('/api/admin/beats/upload', formData, {
         headers: {
           'Content-Type': `multipart/form-data`,
         },

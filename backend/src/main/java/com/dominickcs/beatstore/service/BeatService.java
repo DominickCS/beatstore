@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.dominickcs.beatstore.dto.request.BeatListingDeletionRequest;
+import com.dominickcs.beatstore.dto.request.BeatObjectDeletionRequest;
 import com.dominickcs.beatstore.dto.request.BeatUploadRequest;
 import com.dominickcs.beatstore.dto.response.BeatResponse;
 import com.dominickcs.beatstore.entity.Beat;
@@ -21,6 +22,7 @@ import com.dominickcs.beatstore.repository.BeatRepository;
 import lombok.RequiredArgsConstructor;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
@@ -84,6 +86,13 @@ public class BeatService {
     } catch (NoSuchElementException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A beat with the ID supplied doesn't exist.");
     }
+  }
+
+  public ResponseEntity<String> deleteBeatObject(BeatObjectDeletionRequest request) {
+    DeleteObjectRequest object = DeleteObjectRequest.builder().bucket(bucket).key(request.beatObjKey()).build();
+    s3Client.deleteObject(object);
+
+    return ResponseEntity.ok("The object has been deleted successfully!");
   }
 
   public List<String> getAllBeatObjects() {

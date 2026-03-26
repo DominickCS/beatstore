@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.dominickcs.beatstore.dto.request.BeatListingDeletionRequest;
+import com.dominickcs.beatstore.dto.request.BeatObjectDeletionRequest;
 import com.dominickcs.beatstore.dto.request.BeatUploadRequest;
 import com.dominickcs.beatstore.dto.response.BeatResponse;
 import com.dominickcs.beatstore.service.BeatService;
@@ -31,16 +33,16 @@ import lombok.RequiredArgsConstructor;
 public class BeatController {
   private final BeatService beatService;
 
-  @PostMapping("/beats/upload")
+  @PostMapping("/admin/beats/upload")
   public ResponseEntity<String> uploadBeat(@RequestParam MultipartFile beatFile,
       @RequestParam MultipartFile coverartFile,
       @RequestPart @Valid BeatUploadRequest uploadRequest) {
     return beatService.uploadBeat(beatFile, coverartFile, uploadRequest);
   }
 
-  @DeleteMapping("/beats/delete/{id}")
-  public ResponseEntity<String> deleteBeatListing(@PathVariable(name = "id") Long id,
-      BeatListingDeletionRequest request) {
+  @DeleteMapping("/admin/beats/delete")
+  public ResponseEntity<String> deleteBeatListing(
+      @RequestBody BeatListingDeletionRequest request) {
     return beatService.deleteBeatListing(request);
   }
 
@@ -61,9 +63,14 @@ public class BeatController {
     return ResponseEntity.ok(beatService.getAllBeats());
   }
 
-  @GetMapping("/buckets/beats")
+  @GetMapping("/admin/buckets/beats")
   public List<String> getAllBeatObjects() {
     return beatService.getAllBeatObjects();
+  }
+
+  @DeleteMapping("/admin/buckets/beats/delete")
+  public ResponseEntity<String> deleteBeatObject(@RequestBody BeatObjectDeletionRequest request) {
+    return beatService.deleteBeatObject(request);
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
