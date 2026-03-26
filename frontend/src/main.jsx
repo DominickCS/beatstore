@@ -9,6 +9,7 @@ import ProfilePage from './pages/ProfilePage'
 import ProtectedRoute from './components/ProtectedRoute'
 import { AuthProvider } from './context/AuthContext'
 import AdminPage from './pages/AdminPage'
+import ListingCreationPage from './pages/ListingCreationPage'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -26,6 +27,11 @@ createRoot(document.getElementById('root')).render(
           <Route path="/admin" element={
             <ProtectedRoute requiredRole="ROLE_ADMIN">
               <AdminPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/new-listing" element={
+            <ProtectedRoute requiredRole="ROLE_ADMIN">
+              <ListingCreationPage />
             </ProtectedRoute>
           } />
         </Routes>

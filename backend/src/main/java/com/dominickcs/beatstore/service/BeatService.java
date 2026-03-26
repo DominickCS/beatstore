@@ -44,24 +44,25 @@ public class BeatService {
   public ResponseEntity<String> uploadBeat(MultipartFile beatFile, MultipartFile coverartFile,
       BeatUploadRequest uploadRequest) {
     try {
-      String beatID = UUID.randomUUID().toString().substring(0, 4);
+      String beatObjKey = formatBucketKey(uploadRequest.title()) + "-" + UUID.randomUUID().toString().substring(0, 8);
 
       s3Client.putObject(
           PutObjectRequest.builder().bucket(bucket)
-              .key(uploadRequest.title().replaceAll(" ", "-").toLowerCase() + "-" + beatID)
+              .key(formatBucketKey(beatObjKey))
               .contentType("audio/mpeg").build(),
           RequestBody.fromBytes(beatFile.getBytes()));
 
-      String coverartID = UUID.randomUUID().toString().substring(0, 4);
+      String coverArtObjKey = formatBucketKey(uploadRequest.title()) + "-"
+          + UUID.randomUUID().toString().substring(0, 8);
       s3Client.putObject(
           PutObjectRequest.builder().bucket(coverartBucket)
-              .key(uploadRequest.title().replaceAll(" ", "-").toLowerCase() + "-" + coverartID).contentType("image/png")
+              .key(coverArtObjKey).contentType("image/png")
               .build(),
           RequestBody.fromBytes(coverartFile.getBytes()));
 
       Beat beat = new Beat();
-      beat.setObjStorageKey(beatID);
-      beat.setCoverArtKey(coverartID);
+      beat.setObjStorageKey(beatObjKey);
+      beat.setCoverArtKey(coverArtObjKey);
       beat.setTitle(uploadRequest.title());
       beat.setDescription(uploadRequest.description());
       beat.setPrice(uploadRequest.price());
@@ -135,5 +136,9 @@ public class BeatService {
     return new BeatResponse(beat.getId(), beat.getObjStorageKey(), beat.getCoverArtKey(), beat.getTitle(),
         beat.getDescription(),
         beat.getPrice(), beat.getBpm(), beat.getTags(), beat.getUploadDate());
+  }
+
+  private String formatBucketKey(String requestTitle) {
+    return requestTitle.replace(" ", "-").toLowerCase();
   }
 }

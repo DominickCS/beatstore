@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import NavigationBar from "../components/NavigationBar";
 import api from "../api/axiosInstance";
 import { toast, ToastContainer, Bounce } from "react-toastify";
+import { Link } from "react-router-dom";
 
 export default function AdminPage() {
   const [allBeats, setAllBeats] = useState([])
@@ -50,7 +51,7 @@ export default function AdminPage() {
 
       fetchBeatMetadata();
     } catch (e) {
-      toast.error(<p className="font-extrabold text-center text-lg">{response.data}</p>, {
+      toast.error(<p className="font-extrabold text-center text-lg">{e.data}</p>, {
         position: "bottom-center",
         autoClose: 2000,
         hideProgressBar: false,
@@ -67,6 +68,9 @@ export default function AdminPage() {
     <>
       <ToastContainer />
       <NavigationBar />
+      <div>
+        <Link to="/admin/new-listing">NEW</Link>
+      </div>
       <div className="grid grid-cols-2">
         <ul className="text-center">
           <h2>Storefront Management</h2>
@@ -85,7 +89,7 @@ export default function AdminPage() {
             return (
               <div className="flex justify-between max-w-md mx-auto">
                 <li>{beatObj}</li>
-                <button onClick={() => handleDeletion(beat.id)}>Delete</button>
+                <button onClick={() => handleDeletion(beatObjects.id)}>Delete</button>
               </div>
             )
           })}
