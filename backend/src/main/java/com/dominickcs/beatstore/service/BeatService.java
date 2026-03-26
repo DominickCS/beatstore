@@ -10,11 +10,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.dominickcs.beatstore.dto.request.BeatListingDeletionRequest;
+import com.dominickcs.beatstore.dto.request.BeatListingRequest;
 import com.dominickcs.beatstore.dto.request.BeatObjectDeletionRequest;
-import com.dominickcs.beatstore.dto.request.BeatUploadRequest;
+import com.dominickcs.beatstore.dto.request.BeatObjectUploadRequest;
+import com.dominickcs.beatstore.dto.response.BeatObjectUploadResponse;
 import com.dominickcs.beatstore.dto.response.BeatResponse;
 import com.dominickcs.beatstore.entity.Beat;
 import com.dominickcs.beatstore.repository.BeatRepository;
@@ -43,38 +44,41 @@ public class BeatService {
   @Value("${garage.coverart-bucket}")
   private String coverartBucket;
 
-  public ResponseEntity<String> uploadBeat(MultipartFile beatFile, MultipartFile coverartFile,
-      BeatUploadRequest uploadRequest) {
+  public ResponseEntity<BeatObjectUploadResponse> uploadBeatObjects(BeatObjectUploadRequest request) {
     try {
-      String beatObjKey = formatBucketKey(uploadRequest.title()) + "-" + UUID.randomUUID().toString().substring(0, 8);
 
-      s3Client.putObject(
-          PutObjectRequest.builder().bucket(bucket)
-              .key(formatBucketKey(beatObjKey))
-              .contentType("audio/mpeg").build(),
-          RequestBody.fromBytes(beatFile.getBytes()));
+      String beatObjKey = formatBucketKey(request.beatFile().getOriginalFilename()) + "-"
+          + UUID.randomUUID().toString().substring(0, 8);
 
-      String coverArtObjKey = formatBucketKey(uploadRequest.title()) + "-"
+      s3Client.putObject(PutObjectRequest.builder().bucket(bucket).key(beatObjKey).contentType("audio/mpeg").build(),
+          RequestBody.fromBytes(request.beatFile().getBytes()));
+
+      String coverArtObjKey = formatBucketKey(request.coverArtFile().getOriginalFilename()) + "-"
           + UUID.randomUUID().toString().substring(0, 8);
       s3Client.putObject(
-          PutObjectRequest.builder().bucket(coverartBucket)
-              .key(coverArtObjKey).contentType("image/png")
-              .build(),
-          RequestBody.fromBytes(coverartFile.getBytes()));
+          PutObjectRequest.builder().bucket(coverartBucket).key(coverArtObjKey).contentType("image/png").build(),
+          RequestBody.fromBytes(request.coverArtFile().getBytes()));
 
-      Beat beat = new Beat();
-      beat.setObjStorageKey(beatObjKey);
-      beat.setCoverArtKey(coverArtObjKey);
-      beat.setTitle(uploadRequest.title());
-      beat.setDescription(uploadRequest.description());
-      beat.setPrice(uploadRequest.price());
-      beat.setBpm(uploadRequest.bpm());
-      beat.setTags(uploadRequest.tags());
-      beatRepository.save(beat);
-
-      return ResponseEntity.status(HttpStatus.CREATED).body("Your beat was uploaded successfully!");
+      return ResponseEntity.ok(new BeatObjectUploadResponse(beatObjKey, coverArtObjKey));
     } catch (Exception e) {
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There was an error uploading your beat...");
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+  }
+
+  public ResponseEntity<String> createBeatListing(BeatListingRequest request) {
+    try {
+      Beat beat = new Beat();
+      beat.setObjStorageKey(request.beatObjKey());
+      beat.setCoverArtKey(request.coverArtObjKey());
+      beat.setTitle(request.title());
+      beat.setDescription(request.description());
+      beat.setPrice(request.price());
+      beat.setBpm(request.bpm());
+      beat.setTags(request.tags());
+      beatRepository.save(beat);
+      return ResponseEntity.status(HttpStatus.CREATED).body("Beat listing created successfully!");
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create beat listing.");
     }
   }
 

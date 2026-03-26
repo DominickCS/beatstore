@@ -27,7 +27,6 @@ export default function AdminPage() {
   const fetchBeatObjects = async () => {
     const response = await api.get('/api/admin/buckets/beats');
     setBeatObjects(response.data)
-    console.log(response.data)
   }
 
   useEffect(() => {
@@ -81,11 +80,9 @@ export default function AdminPage() {
         theme: "dark",
         transition: Bounce,
       });
-      console.log(response)
 
       fetchBeatObjects()
     } catch (e) {
-      console.log(e)
       toast.error(<p className="font-extrabold text-center text-lg">{e.data}</p>, {
         position: "bottom-center",
         autoClose: 2000,
@@ -111,8 +108,9 @@ export default function AdminPage() {
         <ul className="text-center">
           <h2>Storefront Listing Management</h2>
           {allBeats.map((beat) => {
+            console.log(beat)
             return (
-              <div className="flex justify-between max-w-md mx-auto">
+              <div className="flex justify-between max-w-md mx-auto [&>li]:py-4">
                 <li>{beat.title}</li>
                 <li>{beat.price}</li>
                 <button onClick={() => handleListingDeletion(beat.id)}>Delete</button>
@@ -122,9 +120,10 @@ export default function AdminPage() {
         </ul>
         <ul className="text-center">
           <h2>Bucket Management</h2>
+          <h3>Beats</h3>
           {beatObjects.map((beatObj) => {
             return (
-              <div className="flex justify-between max-w-md mx-auto">
+              <div className="flex justify-between max-w-md mx-auto [&>li]:py-4">
                 <li>{beatObj}</li>
                 <button onClick={() => handleBeatObjectDeletion(beatObj)}>Delete</button>
               </div>
