@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import NavigationBar from "../components/NavigationBar";
 import api from "../api/axiosInstance";
+import { toast, ToastContainer, Bounce } from "react-toastify";
 
 export default function AdminPage() {
   const [allBeats, setAllBeats] = useState([])
@@ -34,16 +35,38 @@ export default function AdminPage() {
   }, [])
 
   async function handleDeletion(id) {
-    const response = await api.delete(`/api/beats/delete/${id}`)
+    try {
+      const response = await api.delete(`/api/beats/delete/${id}`)
+      toast.success(<p className="font-extrabold text-center text-lg">{response.data}</p>, {
+        position: "bottom-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark",
+        transition: Bounce,
+      });
 
-    fetchBeatMetadata();
-    console.log(response.data)
+      fetchBeatMetadata();
+    } catch (e) {
+      toast.error(<p className="font-extrabold text-center text-lg">{response.data}</p>, {
+        position: "bottom-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark",
+        transition: Bounce,
+      });
+    }
   }
 
   return (
     <>
+      <ToastContainer />
       <NavigationBar />
-
       <div className="grid grid-cols-2">
         <ul className="text-center">
           <h2>Storefront Management</h2>
